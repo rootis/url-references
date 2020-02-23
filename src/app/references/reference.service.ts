@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestoreDocument } from '@angular/fire/firestore';
 
-enum ColumnType {
-  TITLE, DESCRIPTION
+export enum ColumnType {
+  TITLE, DESCRIPTION, TEXT
 }
 
 export interface Column {

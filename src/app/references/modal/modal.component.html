@@ -2,7 +2,8 @@
 
 <div mat-dialog-content>
   <mat-form-field *ngFor="let column of  data.columns">
-    <input matInput placeholder="{{column.title}}" [(ngModel)]="reference[column.key]">
+    <input matInput *ngIf="column.type !== 'TEXT'" placeholder="{{column.title}}" [(ngModel)]="reference[column.key]" />
+    <textarea matInput *ngIf="column.type === 'TEXT'" placeholder="{{column.title}}" [(ngModel)]="reference[column.key]"></textarea>
   </mat-form-field>
 </div>
 
