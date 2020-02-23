@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { FirebaseService } from '../../core/firebase.service';
-import { Column, ReferenceService } from '../reference.service';
+import { Column, ColumnType, ReferenceService } from '../reference.service';
 import { MatDialog } from '@angular/material';
 import { ModalComponent } from '../modal/modal.component';
+import { PreviewComponent } from '../preview/preview.component';
 
 @Component({
   selector: 'app-list',
@@ -16,6 +17,7 @@ export class ListComponent implements OnInit {
   displayedColumns: string[];
   code: string;
   columns: Column[];
+  isTextColumn: boolean;
   resources: object[];
 
   constructor(
@@ -45,7 +47,7 @@ export class ListComponent implements OnInit {
 
   add() {
     this.dialog.open(ModalComponent, {
-      width: '235px',
+      width: this.isTextColumn ? '500px' : '350px',
       data: {
         columns: this.columns,
         data: {}
@@ -55,10 +57,19 @@ export class ListComponent implements OnInit {
 
   edit(row: object) {
     this.dialog.open(ModalComponent, {
-      width: '235px',
+      width: this.isTextColumn ? '500px' : '350px',
       data: {
         columns: this.columns,
         data: row
+      }
+    });
+  }
+
+  view(content: string) {
+    this.dialog.open(PreviewComponent, {
+      width: '80%',
+      data: {
+        content
       }
     });
   }
@@ -67,5 +78,6 @@ export class ListComponent implements OnInit {
     this.columns = columns;
     this.displayedColumns = ['no', ...columns.map(c => c.title), 'actions'];
     this.resources = resources;
+    this.isTextColumn = !!this.columns.find(c => c.type === ColumnType.TEXT);
   }
 }

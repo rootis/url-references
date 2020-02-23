@@ -15,9 +15,10 @@ import { ListComponent } from './list/list.component';
 import { MainEntryComponent } from './main-entry/main-entry.component';
 import { ModalComponent } from './modal/modal.component';
 import { ReferencesRoutingModule } from './references-routing.module';
+import { PreviewComponent } from './preview/preview.component';
 
 @NgModule({
-  declarations: [ListComponent, MainEntryComponent, ModalComponent],
+  declarations: [ListComponent, MainEntryComponent, ModalComponent, PreviewComponent],
   exports: [
     ListComponent
   ],
@@ -34,7 +35,8 @@ import { ReferencesRoutingModule } from './references-routing.module';
     MatMenuModule,
   ],
   entryComponents: [
-    ModalComponent
+    ModalComponent,
+    PreviewComponent
   ]
 })
 export class ReferencesModule { }

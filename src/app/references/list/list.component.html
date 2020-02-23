@@ -25,6 +25,10 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
+          <button mat-menu-item *ngIf="isTextColumn" (click)="view(element.content)">
+            <mat-icon>list_alt</mat-icon>
+            <span>View</span>
+          </button>
           <button mat-menu-item (click)="edit(element)">
             <mat-icon>edit</mat-icon>
             <span>Edit</span>
