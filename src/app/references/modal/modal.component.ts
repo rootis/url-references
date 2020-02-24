@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { Column, ReferenceService } from '../reference.service';
+import { Column, ColumnType, ReferenceService } from '../reference.service';
 import { FirebaseService } from '../../core/firebase.service';
 
 @Component({
@@ -10,6 +10,7 @@ import { FirebaseService } from '../../core/firebase.service';
 })
 export class ModalComponent implements OnInit {
 
+  columns: Column[];
   reference: object;
 
   constructor(
@@ -21,6 +22,7 @@ export class ModalComponent implements OnInit {
       private firebaseService: FirebaseService,
       private referenceService: ReferenceService
   ) {
+    this.columns = data.columns.filter(c => c.type !== ColumnType.VOTE);
     this.reference = JSON.parse(JSON.stringify(data.data));
   }
 
@@ -32,7 +34,6 @@ export class ModalComponent implements OnInit {
   }
 
   save() {
-    this.firebaseService.delete(this.referenceService.document, this.data.data);
-    this.firebaseService.add(this.referenceService.document, this.reference);
+    this.firebaseService.save(this.referenceService.document, this.reference);
   }
 }

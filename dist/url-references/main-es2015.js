@@ -193,13 +193,41 @@ class FirebaseService {
     constructor(db) {
         this.db = db;
     }
+    update(document, entity) {
+        if (entity.id) {
+            this.db.firestore.runTransaction(t => t.get(document.ref).then((doc) => {
+                if (!doc.exists) {
+                    throw new Error('Document does not exist!');
+                }
+                const entities = doc.get('list');
+                const index = entities.findIndex(i => i.id === entity.id);
+                if (index === -1) {
+                    throw new Error('Object in array does not exist!');
+                }
+                entities[index] = entity;
+                t.update(document.ref, {
+                    list: entities
+                });
+            })).then(() => console.log('Transaction successfully committed!'))
+                .catch(error => console.error('Transaction failed: ', error));
+        }
+    }
     getDocument(path) {
         return this.db.collection(FirebaseService.COLLECTION_PATH).doc(path);
     }
-    add(document, obj) {
+    add(document, entity) {
+        entity.id = this.db.createId();
         document.update({
-            list: firebase_app__WEBPACK_IMPORTED_MODULE_1__["firestore"].FieldValue.arrayUnion(obj)
+            list: firebase_app__WEBPACK_IMPORTED_MODULE_1__["firestore"].FieldValue.arrayUnion(entity)
         });
+    }
+    save(document, entity) {
+        if (entity && entity.id) {
+            this.update(document, entity);
+        }
+        else {
+            this.add(document, entity);
+        }
     }
     delete(document, obj) {
         document.update({
@@ -576,10 +604,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ModalComponent", function() { return ModalComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
 /* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/__ivy_ngcc__/esm2015/material.js");
-/* harmony import */ var _core_firebase_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../core/firebase.service */ "./src/app/core/firebase.service.ts");
-/* harmony import */ var _reference_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../reference.service */ "./src/app/references/reference.service.ts");
+/* harmony import */ var _reference_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../reference.service */ "./src/app/references/reference.service.ts");
+/* harmony import */ var _core_firebase_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../core/firebase.service */ "./src/app/core/firebase.service.ts");
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/__ivy_ngcc__/fesm2015/forms.js");
+
 
 
 
@@ -628,6 +657,7 @@ class ModalComponent {
         this.data = data;
         this.firebaseService = firebaseService;
         this.referenceService = referenceService;
+        this.columns = data.columns.filter(c => c.type !== _reference_service__WEBPACK_IMPORTED_MODULE_2__["ColumnType"].VOTE);
         this.reference = JSON.parse(JSON.stringify(data.data));
     }
     ngOnInit() {
@@ -636,11 +666,10 @@ class ModalComponent {
         this.dialogRef.close();
     }
     save() {
-        this.firebaseService.delete(this.referenceService.document, this.data.data);
-        this.firebaseService.add(this.referenceService.document, this.reference);
+        this.firebaseService.save(this.referenceService.document, this.reference);
     }
 }
-ModalComponent.ɵfac = function ModalComponent_Factory(t) { return new (t || ModalComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_material__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_material__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_core_firebase_service__WEBPACK_IMPORTED_MODULE_2__["FirebaseService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_reference_service__WEBPACK_IMPORTED_MODULE_3__["ReferenceService"])); };
+ModalComponent.ɵfac = function ModalComponent_Factory(t) { return new (t || ModalComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_material__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_material__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_core_firebase_service__WEBPACK_IMPORTED_MODULE_3__["FirebaseService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_reference_service__WEBPACK_IMPORTED_MODULE_2__["ReferenceService"])); };
 ModalComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: ModalComponent, selectors: [["app-modal"]], decls: 9, vars: 2, consts: [[1, "mat-h3"], ["mat-dialog-content", ""], ["class", "full-width", 4, "ngFor", "ngForOf"], ["mat-dialog-actions", ""], ["mat-button", "", 3, "click"], ["mat-button", "", 3, "mat-dialog-close", "click"], [1, "full-width"], ["matInput", "", 3, "placeholder", "ngModel", "ngModelChange", 4, "ngIf"], ["matInput", "", 3, "placeholder", "ngModel", "ngModelChange"]], template: function ModalComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "h3", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1, "Reference");
@@ -660,7 +689,7 @@ ModalComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCom
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx.data.columns);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx.columns);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("mat-dialog-close", ctx.data);
     } }, directives: [_angular_material__WEBPACK_IMPORTED_MODULE_1__["MatDialogContent"], _angular_common__WEBPACK_IMPORTED_MODULE_4__["NgForOf"], _angular_material__WEBPACK_IMPORTED_MODULE_1__["MatDialogActions"], _angular_material__WEBPACK_IMPORTED_MODULE_1__["MatButton"], _angular_material__WEBPACK_IMPORTED_MODULE_1__["MatDialogClose"], _angular_material__WEBPACK_IMPORTED_MODULE_1__["MatFormField"], _angular_common__WEBPACK_IMPORTED_MODULE_4__["NgIf"], _angular_material__WEBPACK_IMPORTED_MODULE_1__["MatInput"], _angular_forms__WEBPACK_IMPORTED_MODULE_5__["DefaultValueAccessor"], _angular_forms__WEBPACK_IMPORTED_MODULE_5__["NgControlStatus"], _angular_forms__WEBPACK_IMPORTED_MODULE_5__["NgModel"]], styles: ["h3[_ngcontent-%COMP%] {\n  text-align: center;\n}\n\n.full-width[_ngcontent-%COMP%] {\n  width: 100%;\n}\n\ndiv.mat-dialog-actions[_ngcontent-%COMP%] {\n  -webkit-box-pack: center;\n          justify-content: center;\n  margin: auto;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvcmVmZXJlbmNlcy9tb2RhbC9DOlxccHJvamVjdHNcXHBlcnNvbmFsXFx1cmwtcmVmZXJlbmNlcy9zcmNcXGFwcFxccmVmZXJlbmNlc1xcbW9kYWxcXG1vZGFsLmNvbXBvbmVudC5zYXNzIiwic3JjL2FwcC9yZWZlcmVuY2VzL21vZGFsL21vZGFsLmNvbXBvbmVudC5zYXNzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0Usa0JBQUE7QUNDRjs7QURDQTtFQUNFLFdBQUE7QUNFRjs7QURBQTtFQUNFLHdCQUFBO1VBQUEsdUJBQUE7RUFDQSxZQUFBO0FDR0YiLCJmaWxlIjoic3JjL2FwcC9yZWZlcmVuY2VzL21vZGFsL21vZGFsLmNvbXBvbmVudC5zYXNzIiwic291cmNlc0NvbnRlbnQiOlsiaDNcbiAgdGV4dC1hbGlnbjogY2VudGVyXG5cbi5mdWxsLXdpZHRoXG4gIHdpZHRoOiAxMDAlXG5cbmRpdi5tYXQtZGlhbG9nLWFjdGlvbnNcbiAganVzdGlmeS1jb250ZW50OiBjZW50ZXJcbiAgbWFyZ2luOiBhdXRvXG4iLCJoMyB7XG4gIHRleHQtYWxpZ246IGNlbnRlcjtcbn1cblxuLmZ1bGwtd2lkdGgge1xuICB3aWR0aDogMTAwJTtcbn1cblxuZGl2Lm1hdC1kaWFsb2ctYWN0aW9ucyB7XG4gIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICBtYXJnaW46IGF1dG87XG59Il19 */"] });
@@ -674,7 +703,7 @@ ModalComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCom
     }], function () { return [{ type: _angular_material__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"] }, { type: undefined, decorators: [{
                 type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Inject"],
                 args: [_angular_material__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"]]
-            }] }, { type: _core_firebase_service__WEBPACK_IMPORTED_MODULE_2__["FirebaseService"] }, { type: _reference_service__WEBPACK_IMPORTED_MODULE_3__["ReferenceService"] }]; }, null); })();
+            }] }, { type: _core_firebase_service__WEBPACK_IMPORTED_MODULE_3__["FirebaseService"] }, { type: _reference_service__WEBPACK_IMPORTED_MODULE_2__["ReferenceService"] }]; }, null); })();
 
 
 /***/ }),
@@ -753,6 +782,7 @@ var ColumnType;
     ColumnType["TITLE"] = "TITLE";
     ColumnType["DESCRIPTION"] = "DESCRIPTION";
     ColumnType["TEXT"] = "TEXT";
+    ColumnType["VOTE"] = "VOTE";
 })(ColumnType || (ColumnType = {}));
 class ReferenceService {
     constructor() {

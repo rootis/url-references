@@ -378,16 +378,57 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }
 
       _createClass(FirebaseService, [{
+        key: "update",
+        value: function update(document, entity) {
+          if (entity.id) {
+            this.db.firestore.runTransaction(function (t) {
+              return t.get(document.ref).then(function (doc) {
+                if (!doc.exists) {
+                  throw new Error('Document does not exist!');
+                }
+
+                var entities = doc.get('list');
+                var index = entities.findIndex(function (i) {
+                  return i.id === entity.id;
+                });
+
+                if (index === -1) {
+                  throw new Error('Object in array does not exist!');
+                }
+
+                entities[index] = entity;
+                t.update(document.ref, {
+                  list: entities
+                });
+              });
+            }).then(function () {
+              return console.log('Transaction successfully committed!');
+            }).catch(function (error) {
+              return console.error('Transaction failed: ', error);
+            });
+          }
+        }
+      }, {
         key: "getDocument",
         value: function getDocument(path) {
           return this.db.collection(FirebaseService.COLLECTION_PATH).doc(path);
         }
       }, {
         key: "add",
-        value: function add(document, obj) {
+        value: function add(document, entity) {
+          entity.id = this.db.createId();
           document.update({
-            list: firebase_app__WEBPACK_IMPORTED_MODULE_1__["firestore"].FieldValue.arrayUnion(obj)
+            list: firebase_app__WEBPACK_IMPORTED_MODULE_1__["firestore"].FieldValue.arrayUnion(entity)
           });
+        }
+      }, {
+        key: "save",
+        value: function save(document, entity) {
+          if (entity && entity.id) {
+            this.update(document, entity);
+          } else {
+            this.add(document, entity);
+          }
         }
       }, {
         key: "delete",
@@ -1204,15 +1245,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /* harmony import */
 
 
-    var _core_firebase_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
-    /*! ../../core/firebase.service */
-    "./src/app/core/firebase.service.ts");
+    var _reference_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! ../reference.service */
+    "./src/app/references/reference.service.ts");
     /* harmony import */
 
 
-    var _reference_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
-    /*! ../reference.service */
-    "./src/app/references/reference.service.ts");
+    var _core_firebase_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    /*! ../../core/firebase.service */
+    "./src/app/core/firebase.service.ts");
     /* harmony import */
 
 
@@ -1320,6 +1361,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         this.data = data;
         this.firebaseService = firebaseService;
         this.referenceService = referenceService;
+        this.columns = data.columns.filter(function (c) {
+          return c.type !== _reference_service__WEBPACK_IMPORTED_MODULE_2__["ColumnType"].VOTE;
+        });
         this.reference = JSON.parse(JSON.stringify(data.data));
       }
 
@@ -1334,8 +1378,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }, {
         key: "save",
         value: function save() {
-          this.firebaseService.delete(this.referenceService.document, this.data.data);
-          this.firebaseService.add(this.referenceService.document, this.reference);
+          this.firebaseService.save(this.referenceService.document, this.reference);
         }
       }]);
 
@@ -1343,7 +1386,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     }();
 
     ModalComponent.ɵfac = function ModalComponent_Factory(t) {
-      return new (t || ModalComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_material__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_material__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_core_firebase_service__WEBPACK_IMPORTED_MODULE_2__["FirebaseService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_reference_service__WEBPACK_IMPORTED_MODULE_3__["ReferenceService"]));
+      return new (t || ModalComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_material__WEBPACK_IMPORTED_MODULE_1__["MatDialogRef"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_material__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_core_firebase_service__WEBPACK_IMPORTED_MODULE_3__["FirebaseService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_reference_service__WEBPACK_IMPORTED_MODULE_2__["ReferenceService"]));
     };
 
     ModalComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({
@@ -1394,7 +1437,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         if (rf & 2) {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx.data.columns);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx.columns);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
 
@@ -1424,9 +1467,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             args: [_angular_material__WEBPACK_IMPORTED_MODULE_1__["MAT_DIALOG_DATA"]]
           }]
         }, {
-          type: _core_firebase_service__WEBPACK_IMPORTED_MODULE_2__["FirebaseService"]
+          type: _core_firebase_service__WEBPACK_IMPORTED_MODULE_3__["FirebaseService"]
         }, {
-          type: _reference_service__WEBPACK_IMPORTED_MODULE_3__["ReferenceService"]
+          type: _reference_service__WEBPACK_IMPORTED_MODULE_2__["ReferenceService"]
         }];
       }, null);
     })();
@@ -1586,6 +1629,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       ColumnType["TITLE"] = "TITLE";
       ColumnType["DESCRIPTION"] = "DESCRIPTION";
       ColumnType["TEXT"] = "TEXT";
+      ColumnType["VOTE"] = "VOTE";
     })(ColumnType || (ColumnType = {}));
 
     var ReferenceService = function ReferenceService() {

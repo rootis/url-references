@@ -5,7 +5,8 @@ export enum ColumnType {
   IMAGE = 'IMAGE',
   TITLE = 'TITLE',
   DESCRIPTION = 'DESCRIPTION',
-  TEXT = 'TEXT'
+  TEXT = 'TEXT',
+  VOTE = 'VOTE'
 }
 
 export interface Column {
