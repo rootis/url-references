@@ -3,7 +3,7 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firest
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 
-interface Entity {
+export interface Entity {
   id?: string;
 }
 
@@ -18,8 +18,7 @@ export class FirebaseService {
   }
 
   update(document: AngularFirestoreDocument<unknown>, entity: Entity) {
-    if (entity.id) {
-      this.db.firestore.runTransaction(t =>
+      return this.db.firestore.runTransaction(t =>
         t.get(document.ref).then((doc) => {
           if (!doc.exists) {
             throw new Error('Document does not exist!');
@@ -38,9 +37,7 @@ export class FirebaseService {
             list: entities
           });
         })
-      ).then(() => console.log('Transaction successfully committed!'))
-      .catch(error => console.error('Transaction failed: ', error));
-    }
+      );
   }
 
   getDocument(path: string) {

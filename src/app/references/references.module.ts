@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import {
   MatButtonModule,
   MatDialogModule,
+  MatSnackBarModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
@@ -28,6 +29,7 @@ import { PreviewComponent } from './preview/preview.component';
     MatIconModule,
     MatButtonModule,
     MatDialogModule,
+    MatSnackBarModule,
     ReferencesRoutingModule,
     MatFormFieldModule,
     MatInputModule,

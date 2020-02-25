@@ -1,11 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MatDialog, MatSnackBar } from '@angular/material';
 
-import { FirebaseService } from '../../core/firebase.service';
+import { Entity, FirebaseService } from '../../core/firebase.service';
 import { Column, ColumnType, ReferenceService } from '../reference.service';
-import { MatDialog } from '@angular/material';
 import { ModalComponent } from '../modal/modal.component';
 import { PreviewComponent } from '../preview/preview.component';
+import { AuthService } from '../../core/auth.service';
+import { User } from 'firebase';
+
+interface VoteEntity extends Entity {
+  votedPeople: {[key: string]: boolean};
+  votes: number;
+}
 
 @Component({
   selector: 'app-list',
@@ -18,27 +25,36 @@ export class ListComponent implements OnInit {
   code: string;
   columns: Column[];
   isTextColumn: boolean;
-  resources: object[];
+  isVoteColumn: boolean;
+  resources: VoteEntity[];
 
   constructor(
       public dialog: MatDialog,
       private firebaseService: FirebaseService,
       private referenceService: ReferenceService,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private authService: AuthService,
+      private snackBar: MatSnackBar
   ) {
     this.code = this.route.snapshot.paramMap.get('code');
     if (referenceService.columns) {
-      this.initValues(referenceService.columns, referenceService.resources);
+      this.setValues(referenceService.columns, referenceService.resources as VoteEntity[]);
     } else {
       referenceService.document = firebaseService.getDocument(this.code);
     }
     referenceService.document.snapshotChanges().subscribe(
         ({payload}) =>
-            this.initValues(payload.get('structure'), payload.get('list'))
+            this.setValues(payload.get('structure'), payload.get('list'))
     );
   }
 
   ngOnInit() {
+  }
+
+  isTextualColumn(type: ColumnType) {
+    return type === ColumnType.TEXT ||
+        type === ColumnType.TITLE ||
+        type === ColumnType.DESCRIPTION;
   }
 
   delete(row: object) {
@@ -74,10 +90,60 @@ export class ListComponent implements OnInit {
     });
   }
 
-  private initValues(columns: Column[], resources: object[]) {
+  vote(voteEntity: VoteEntity) {
+    this.authService.getCurrentUserEmail()
+      .then((user: User) => this.addVote(voteEntity, user.email))
+      .catch(err => {
+        console.log(err);
+        this.authService.doGoogleLogin().then(a => console.log(a.additionalUserInfo.profile.email));
+      });
+  }
+
+  private addVote(voteEntity: VoteEntity, email: string) {
+    if (voteEntity.votedPeople) {
+      if (voteEntity.votedPeople[email] === true) {
+        this.showToast('Only one vote is allowed... :(');
+        return;
+      }
+    } else {
+      voteEntity.votedPeople = {};
+    }
+
+    voteEntity.votedPeople[email] = true;
+    voteEntity.votes = Object.keys(voteEntity.votedPeople).length;
+
+    this.firebaseService.update(this.referenceService.document, voteEntity)
+      .then(() => this.showToast('Your vote was added! :)'))
+      .catch(err => {
+        this.showToast('Something went wrong... :(');
+        console.log(err);
+      });
+  }
+
+  private showToast(message: string) {
+    this.snackBar.open(message, null, {
+      duration: 4000,
+      verticalPosition: 'top'
+    });
+  }
+
+  private setValues(columns: Column[], resources: VoteEntity[]) {
     this.columns = columns;
     this.displayedColumns = ['no', ...columns.map(c => c.title), 'actions'];
-    this.resources = resources;
-    this.isTextColumn = !!this.columns.find(c => c.type === ColumnType.TEXT);
+    this.resources = resources.sort(this.compare);
+    this.columns.forEach(({ type }) => {
+      if (type === ColumnType.TEXT) {
+        this.isTextColumn = true;
+      } else if (type === ColumnType.VOTE) {
+        this.isVoteColumn = true;
+      }
+    });
+  }
+
+  private compare(a: VoteEntity, b: VoteEntity) {
+    a.votes = a.votes || 0;
+    b.votes = b.votes || 0;
+
+    return (a.votes < b.votes) ? 1 : a.votes > b.votes ? -1 : 0;
   }
 }
