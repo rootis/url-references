@@ -9,10 +9,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
 import { ReferencesModule } from './references/references.module';
+import { VersionComponent } from './version/version.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    VersionComponent
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebaseConfig),
