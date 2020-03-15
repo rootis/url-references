@@ -60,51 +60,24 @@ export class FirebaseService {
     }
   }
 
-  delete(document: AngularFirestoreDocument<unknown>, obj: object) {
-    document.update({
-      list: firebase.firestore.FieldValue.arrayRemove(obj)
-    });
+  delete(document: AngularFirestoreDocument<unknown>, entity: Entity) {
+    this.db.firestore.runTransaction(t =>
+      t.get(document.ref).then((doc) => {
+        if (!doc.exists) {
+          throw new Error('Document does not exist!');
+        }
+
+        const entities: Entity[] = doc.get('list');
+        const index = entities.findIndex(i => i.id === entity.id);
+
+        if (index === -1) {
+          throw new Error('Object in array does not exist!');
+        }
+
+        t.update(document.ref, {
+          list: firebase.firestore.FieldValue.arrayRemove(entities[index])
+        });
+      })
+    );
   }
-
-  /*getAvatars() {
-    return this.db.collection('/avatar').valueChanges()
-  }
-
-  getUser(userKey) {
-    return this.db.collection('users').doc(userKey).snapshotChanges();
-  }
-
-  updateUser(userKey, value) {
-    value.nameToSearch = value.name.toLowerCase();
-    return this.db.collection('users').doc(userKey).set(value);
-  }
-
-  deleteUser(userKey) {
-    return this.db.collection('users').doc(userKey).delete();
-  }
-
-  getUsers() {
-    return this.db.collection('users').snapshotChanges();
-  }
-
-  searchUsers(searchValue) {
-    return this.db.collection('users', ref => ref.where('nameToSearch', '>=', searchValue)
-    .where('nameToSearch', '<=', searchValue + '\uf8ff'))
-    .snapshotChanges()
-  }
-
-  searchUsersByAge(value) {
-    return this.db.collection('users', ref => ref.orderBy('age').startAt(value)).snapshotChanges();
-  }
-
-
-  createUser(value, avatar) {
-    return this.db.collection('users').add({
-      name: value.name,
-      nameToSearch: value.name.toLowerCase(),
-      surname: value.surname,
-      age: parseInt(value.age),
-      avatar: avatar
-    });
-  }*/
 }
