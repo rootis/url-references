@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { User } from 'firebase';
 
 import { Entity, FirebaseService } from '../../core/firebase.service';
 import { Column, ColumnType, ReferenceService } from '../reference.service';
 import { ModalComponent } from '../modal/modal.component';
 import { PreviewComponent } from '../preview/preview.component';
 import { AuthService } from '../../core/auth.service';
-import { User } from 'firebase';
 
 interface VoteEntity extends Entity {
   votedPeople: {[key: string]: boolean};
