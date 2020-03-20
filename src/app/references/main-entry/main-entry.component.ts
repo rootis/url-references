@@ -32,6 +32,11 @@ export class MainEntryComponent implements OnInit {
         this.referenceService.columns = structure;
         this.referenceService.resources = result.payload.get('list');
         this.router.navigate([`/${this.code}`]);
+      } else {
+        const newLibary = prompt("\nLibrary doen't exist.\n\nDo you whant to create library:", this.code);
+        if (newLibary) {
+          alert("Work in progress");
+        }
       }
     });
   }
