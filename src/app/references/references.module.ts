@@ -15,9 +15,10 @@ import { MainEntryComponent } from './main-entry/main-entry.component';
 import { ModalComponent } from './modal/modal.component';
 import { ReferencesRoutingModule } from './references-routing.module';
 import { PreviewComponent } from './preview/preview.component';
+import { InfoComponent } from './info/info.component';
 
 @NgModule({
-  declarations: [ListComponent, MainEntryComponent, ModalComponent, PreviewComponent],
+  declarations: [ListComponent, MainEntryComponent, ModalComponent, PreviewComponent, InfoComponent],
   exports: [
     ListComponent
   ],
