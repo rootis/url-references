@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 
 import { FirebaseService } from '../../core/firebase.service';
 import { Column, ReferenceService } from '../reference.service';
+import { InfoComponent } from '../info/info.component';
 
 @Component({
   selector: 'app-main-entry',
@@ -14,6 +16,7 @@ export class MainEntryComponent implements OnInit {
   code: string;
 
   constructor(
+      public dialog: MatDialog,
       private firebaseService: FirebaseService,
       private referenceService: ReferenceService,
       private router: Router
@@ -32,6 +35,10 @@ export class MainEntryComponent implements OnInit {
         this.referenceService.columns = structure;
         this.referenceService.resources = result.payload.get('list');
         this.router.navigate([`/${this.code}`]);
+      } else {
+        this.dialog.open(InfoComponent, {
+          width: '350px'
+        });
       }
     });
   }
