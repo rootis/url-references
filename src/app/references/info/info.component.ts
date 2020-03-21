@@ -15,7 +15,7 @@ export class InfoComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onNoClick(): void {
+  close(): void {
     this.dialogRef.close();
   }
 }
