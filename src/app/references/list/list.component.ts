@@ -9,6 +9,7 @@ import { Column, ColumnType, ReferenceService } from '../reference.service';
 import { ModalComponent } from '../modal/modal.component';
 import { PreviewComponent } from '../preview/preview.component';
 import { AuthService } from '../../core/auth.service';
+import { RemoveConfirmationComponent } from '../remove-confirmation/remove-confirmation.component';
 
 interface VoteEntity extends Entity {
   votedPeople: {[key: string]: boolean};
@@ -28,6 +29,7 @@ export class ListComponent implements OnInit {
   isTextColumn: boolean;
   isVoteColumn: boolean;
   resources: VoteEntity[];
+  confirmation: boolean;
 
   constructor(
       public dialog: MatDialog,
@@ -59,7 +61,15 @@ export class ListComponent implements OnInit {
   }
 
   delete(row: object) {
-    this.firebaseService.delete(this.referenceService.document, row);
+    const dialogRef = this.dialog.open(RemoveConfirmationComponent, {
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(this.confirmation = result) {
+        this.firebaseService.delete(this.referenceService.document, row);
+      }
+    });
   }
 
   add() {
