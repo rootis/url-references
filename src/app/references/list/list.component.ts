@@ -29,7 +29,6 @@ export class ListComponent implements OnInit {
   isTextColumn: boolean;
   isVoteColumn: boolean;
   resources: VoteEntity[];
-  confirmation: boolean;
 
   constructor(
       public dialog: MatDialog,
@@ -66,7 +65,7 @@ export class ListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(this.confirmation = result) {
+      if(result) {
         this.firebaseService.delete(this.referenceService.document, row);
       }
     });
