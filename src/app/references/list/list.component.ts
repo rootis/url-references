@@ -64,11 +64,7 @@ export class ListComponent implements OnInit {
       width: '500px'
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result) {
-        this.firebaseService.delete(this.referenceService.document, row);
-      }
-    });
+    dialogRef.afterClosed().subscribe(result => result && this.firebaseService.delete(this.referenceService.document, row))
   }
 
   add() {
