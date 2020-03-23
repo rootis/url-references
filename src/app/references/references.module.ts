@@ -16,9 +16,10 @@ import { ModalComponent } from './modal/modal.component';
 import { ReferencesRoutingModule } from './references-routing.module';
 import { PreviewComponent } from './preview/preview.component';
 import { InfoComponent } from './info/info.component';
+import { DeleteConfirmationComponent } from './delete-confirmation/delete-confirmation.component';
 
 @NgModule({
-  declarations: [ListComponent, MainEntryComponent, ModalComponent, PreviewComponent, InfoComponent],
+  declarations: [ListComponent, MainEntryComponent, ModalComponent, PreviewComponent, InfoComponent, DeleteConfirmationComponent],
   exports: [
     ListComponent
   ],

@@ -9,6 +9,7 @@ import { Column, ColumnType, ReferenceService } from '../reference.service';
 import { ModalComponent } from '../modal/modal.component';
 import { PreviewComponent } from '../preview/preview.component';
 import { AuthService } from '../../core/auth.service';
+import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
 
 interface VoteEntity extends Entity {
   votedPeople: {[key: string]: boolean};
@@ -59,7 +60,11 @@ export class ListComponent implements OnInit {
   }
 
   delete(row: object) {
-    this.firebaseService.delete(this.referenceService.document, row);
+    const dialogRef = this.dialog.open(DeleteConfirmationComponent, {
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => result && this.firebaseService.delete(this.referenceService.document, row))
   }
 
   add() {
