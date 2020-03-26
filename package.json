@@ -9,6 +9,7 @@
     "build-prod": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
+    "postbuild-prod": "node redirects.js",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -39,6 +40,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
+    "fs": "0.0.1-security",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",
