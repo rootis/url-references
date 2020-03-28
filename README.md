@@ -1,27 +1,76 @@
-# UrlReferences
+# project-title TBD
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.22.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli).
 
-## Development server
+### Firebase
+
+Project uses [Cloud Firestore](https://firebase.google.com/docs/firestore).
+<br />Every list is a document in Firebase collection.
+<br />Document ID is list ID
+
+#### Document Structure
+
+<pre>
+{
+  "structure": [
+    {
+      "type": "TITLE",
+      "key": "fullName",
+      "title": "Full Name"
+    },
+    {
+      "type": "TEXT",
+      "key": "biography",
+      "title": "Biography"
+    }
+  ],
+  "list": [
+    {
+      "fullName": "Name Surname",
+      "biography": "Very long text"
+    }
+  ]
+}
+</pre>
+
+##### Property: `structure`
+
+List of objects defining column. Column properties:
+<br />`type` - column type (enum value)
+<br />`key` - storage property name. E.g. we are creating a new record, this column value will be stored in property: `fullName`
+<br />`title` - column title. Table column header label. New record creation input field label, etc.  
+
+
+##### Property: `list`
+
+List of objects. Every object will be displayed as row in list.
+
+### Development
+
+#### Environment Variables
+
+Runtime has one required env variable: `FIREBASE_CONFIG`
+<br />This variable has to be defined in runtime configuration:
+<br /><pre>"{apiKey:'xxx',authDomain:'xxx',databaseURL:'xxx',projectId:'xxx',storageBucket:'xxx',messagingSenderId:'123',appId:'app:123',measurementId:'G-XX'}"</pre>
+
+#### Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+### Build
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Run `ng build` to build the project. Use the `--prod` flag for a production build.
 
-## Build
+### Prod Build (Netlify)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `npm run build-prod` to build the project.
+<br />It has pre script to install dependencies.
+<br />It has post script to build redirects file for Netlify.
 
-## Running unit tests
+### Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+### Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
