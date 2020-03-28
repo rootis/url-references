@@ -5,8 +5,8 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 ### Firebase
 
 Project uses [Cloud Firestore](https://firebase.google.com/docs/firestore).
-<br />Every list is a document in Firebase collection.
-<br />Document ID is list ID
+<br />Every <b>list is a document</b> in Firebase collection.
+<br /><b>Document ID is list ID</b>
 
 #### Document Structure
 
@@ -61,7 +61,7 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 
 Run `ng build` to build the project. Use the `--prod` flag for a production build.
 
-### Prod Build (Netlify)
+#### Prod Build (Netlify)
 
 Run `npm run build-prod` to build the project.
 <br />It has pre script to install dependencies.
