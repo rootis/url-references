@@ -3,6 +3,8 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firest
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 
+import { environment } from '../../environments/environment';
+
 export interface Entity {
   id?: string;
 }
@@ -11,8 +13,6 @@ export interface Entity {
   providedIn: 'root'
 })
 export class FirebaseService {
-
-  private static COLLECTION_PATH = 'reference';
 
   constructor(private db: AngularFirestore) {
   }
@@ -41,7 +41,14 @@ export class FirebaseService {
   }
 
   getDocument(path: string) {
-    return this.db.collection(FirebaseService.COLLECTION_PATH).doc(path);
+    const collectionPath = environment.collectionPath;
+
+    if (!collectionPath) {
+        console.error('Collection path is required');
+        return null;
+    }
+
+    return this.db.collection(collectionPath).doc(path);
   }
 
   add(document: AngularFirestoreDocument<unknown>, entity: Entity) {

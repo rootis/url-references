@@ -27,8 +27,12 @@ export class MainEntryComponent implements OnInit {
   }
 
   submit() {
+    if (!this.code) {
+      return;
+    }
+
     const document = this.firebaseService.getDocument(this.code);
-    document.snapshotChanges().subscribe(result => {
+    document?.snapshotChanges?.().subscribe?.(result => {
       const structure: Column[] = result.payload.get('structure');
       if (structure) {
         this.referenceService.document = document;
