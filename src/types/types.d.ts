@@ -1,4 +1,5 @@
 interface Env {
+    COLLECTION_PATH: string;
     FIREBASE_CONFIG: {[key: string]: string};
 }
 
