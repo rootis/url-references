@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { User } from 'firebase';
 
 import { Entity, FirebaseService } from '../../core/firebase.service';
 import { Column, ColumnType, ReferenceService } from '../reference.service';
@@ -97,15 +96,23 @@ export class ListComponent implements OnInit {
   }
 
   vote(voteEntity: VoteEntity) {
-    this.authService.getCurrentUserEmail()
-      .then((user: User) => this.addVote(voteEntity, user.email))
-      .catch(err => {
-        console.log(err);
-        this.authService.doGoogleLogin().then(a => console.log(a.additionalUserInfo.profile.email));
-      });
+    const email = this.authService.user?.email;
+
+    if (email) {
+      this.addVote(voteEntity, email);
+    } else {
+      this.authService.loginGoogle()
+        .then(({ email }) => this.addVote(voteEntity, email))
+        .catch(() => console.error('Login failed'));
+    }
   }
 
   private addVote(voteEntity: VoteEntity, email: string) {
+    if (!email) {
+      console.error('Invalid email');
+      return;
+    }
+
     if (voteEntity.votedPeople) {
       if (voteEntity.votedPeople[email] === true) {
         this.showToast('Only one vote is allowed... :(');

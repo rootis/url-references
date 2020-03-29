@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import * as firebase from 'firebase/app';
+import { auth } from 'firebase/app';
 
 interface User {
+  uid: string;
   email: string;
 }
 
@@ -11,41 +12,33 @@ interface User {
 })
 export class AuthService {
 
+  user: User;
+
   constructor(private afAuth: AngularFireAuth) {
+    auth().onAuthStateChanged((state) => this.user = state?.providerData?.[0]);
   }
 
-  doGoogleLogin() {
-    return new Promise<any>((resolve, reject) => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      provider.addScope('email');
-      this.afAuth.auth.signInWithPopup(provider)
-      .then(res => resolve(res), err => {
-        console.log(err);
-        reject(err);
-      });
-    });
-  }
+  loginGoogle() {
+    return new Promise<any>((resolve, reject) => this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider())
+      .then(result => {
+        const profile = result?.additionalUserInfo?.profile;
 
-  getCurrentUserEmail() {
-    return new Promise<any>((resolve, reject) => {
-      firebase.auth().onAuthStateChanged(u => {
-        const user = this.getUser(u);
-        if (user) {
-          resolve(user);
+        if (profile) {
+          resolve(profile);
         } else {
-          reject('No logged in user');
+          reject('Login failed');
         }
-      });
-    });
+      }, err => this.catchError(err, reject))
+      .catch(err => this.catchError(err, reject))
+    );
   }
 
-  private getUser(obj: { providerData: { email: string }[] }) {
-    if (obj && obj.providerData && obj.providerData[0] && obj.providerData[0].email) {
-      return {
-        email: obj.providerData[0].email
-      };
-    } else {
-      return null;
-    }
+  logout() {
+    auth().signOut();
+  }
+
+  private catchError(err, reject) {
+    console.error(err);
+    reject(err);
   }
 }
