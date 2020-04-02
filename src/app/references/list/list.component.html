@@ -15,7 +15,7 @@
         <img *ngIf="column.type === 'IMAGE'" src="{{element[column.key]}}" alt="Reference image">
         <a *ngIf="column.type === 'URL'" href="{{element[column.key]}}" target="_blank">{{element[column.key]}}</a>
         <span *ngIf="column.type === 'VOTE'">{{element[column.key] || 0}}</span>
-        <span *ngIf="isTextualColumn(column.type)">{{column.type === 'TEXT'? element[column.key].substring(0, 50) + ' ...' : element[column.key]}}</span>
+        <span *ngIf="isTextualColumn(column.type)">{{column.type === 'TEXT'? (element[column.key] ? (element[column.key].substring(0, 50) + ' ...') : '') : element[column.key]}}</span>
       </td>
     </ng-container>
 
@@ -30,7 +30,7 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item *ngIf="isTextColumn" (click)="view(element.content)">
+          <button mat-menu-item *ngIf="isTextColumn && element.content" (click)="view(element.content)">
             <mat-icon>list_alt</mat-icon>
             <span>View</span>
           </button>
