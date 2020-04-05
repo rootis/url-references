@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { ReferenceService } from '../reference.service';
 import { FirebaseService } from '../../core/firebase.service';
@@ -9,24 +9,21 @@ import { FirebaseService } from '../../core/firebase.service';
   styleUrls: ['./checkbox.component.sass']
 })
 export class CheckboxComponent implements OnInit {
+
   @Input() reference: object;
-  isChecked: boolean;
+  @Input() isChecked: boolean;
+  @Output() isCheckedChange = new EventEmitter<boolean>();
 
   constructor(
-      private firebaseService: FirebaseService,
-      private referenceService: ReferenceService
-   ) { }
+    private firebaseService: FirebaseService,
+    private referenceService: ReferenceService
+  ) {}
 
   ngOnInit(): void {
-    this.isChecked = this.reference['corona'];
   }
 
-  click(event): void {
-    this.reference['corona'] = event.checked;
-    this.save();
-  }
-
-  private save() {
+  onChange() {
+    this.isCheckedChange.emit(this.isChecked);
     this.firebaseService.save(this.referenceService.document, this.reference);
   }
 }
