@@ -16,6 +16,7 @@
         <a *ngIf="column.type === 'URL'" href="{{element[column.key]}}" target="_blank">{{element[column.key]}}</a>
         <span *ngIf="column.type === 'VOTE'">{{element[column.key] || 0}}</span>
         <span *ngIf="isTextualColumn(column.type)">{{column.type === 'TEXT'? (element[column.key] ? (element[column.key].substring(0, 50) + ' ...') : '') : element[column.key]}}</span>
+        <span *ngIf="column.type === 'CHECKBOX'"><app-checkbox [reference]="element" [(isChecked)]="element[column.key]"></app-checkbox></span>
       </td>
     </ng-container>
 

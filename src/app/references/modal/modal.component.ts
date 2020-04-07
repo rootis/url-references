@@ -23,7 +23,7 @@ export class ModalComponent implements OnInit {
       private firebaseService: FirebaseService,
       private referenceService: ReferenceService
   ) {
-    this.columns = data.columns.filter(c => c.type !== ColumnType.VOTE);
+    this.columns = data.columns.filter(c => c.type !== ColumnType.VOTE && c.type !== ColumnType.CHECKBOX);
     this.reference = JSON.parse(JSON.stringify(data.data));
   }
 

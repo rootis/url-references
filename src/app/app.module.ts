@@ -29,7 +29,7 @@ import { VersionComponent } from './version/version.component';
         BrowserAnimationsModule,
         ReferencesModule,
         MatToolbarModule,
-        MatButtonModule,
+        MatButtonModule
     ],
   providers: [],
   bootstrap: [AppComponent]

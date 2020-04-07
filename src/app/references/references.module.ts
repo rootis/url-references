@@ -17,9 +17,11 @@ import { ReferencesRoutingModule } from './references-routing.module';
 import { PreviewComponent } from './preview/preview.component';
 import { InfoComponent } from './info/info.component';
 import { DeleteConfirmationComponent } from './delete-confirmation/delete-confirmation.component';
+import { CheckboxComponent } from './checkbox/checkbox.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
-  declarations: [ListComponent, MainEntryComponent, ModalComponent, PreviewComponent, InfoComponent, DeleteConfirmationComponent],
+  declarations: [ListComponent, MainEntryComponent, ModalComponent, PreviewComponent, InfoComponent, DeleteConfirmationComponent, CheckboxComponent],
   exports: [
     ListComponent
   ],
@@ -35,6 +37,7 @@ import { DeleteConfirmationComponent } from './delete-confirmation/delete-confir
     MatInputModule,
     FormsModule,
     MatMenuModule,
+    MatCheckboxModule
   ],
   entryComponents: [
     ModalComponent,
