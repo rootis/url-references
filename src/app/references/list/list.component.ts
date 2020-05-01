@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -9,6 +9,7 @@ import { ModalComponent } from '../modal/modal.component';
 import { PreviewComponent } from '../preview/preview.component';
 import { AuthService } from '../../core/auth.service';
 import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
+import { InfoComponent } from '../info/info.component';
 
 interface VoteEntity extends Entity {
   votedPeople: {[key: string]: boolean};
@@ -35,7 +36,8 @@ export class ListComponent implements OnInit {
       private referenceService: ReferenceService,
       private route: ActivatedRoute,
       private authService: AuthService,
-      private snackBar: MatSnackBar
+      private snackBar: MatSnackBar,
+      private router: Router
   ) {
     this.code = this.route.snapshot.paramMap.get('code');
     if (referenceService.columns) {
@@ -142,15 +144,23 @@ export class ListComponent implements OnInit {
 
   private setValues(columns: Column[], resources: VoteEntity[]) {
     this.columns = columns;
-    this.displayedColumns = ['no', ...columns.map(c => c.title), 'actions'];
-    this.resources = resources.sort(this.compare);
-    this.columns.forEach(({ type }) => {
-      if (type === ColumnType.TEXT) {
-        this.isTextColumn = true;
-      } else if (type === ColumnType.VOTE) {
-        this.isVoteColumn = true;
-      }
-    });
+    try{
+      this.displayedColumns = ['no', ...columns.map(c => c.title), 'actions'];
+      this.resources = resources.sort(this.compare);
+      this.columns.forEach(({ type }) => {
+        if (type === ColumnType.TEXT) {
+          this.isTextColumn = true;
+        } else if (type === ColumnType.VOTE) {
+          this.isVoteColumn = true;
+        }
+      });
+    }
+    catch (error) {
+      this.dialog.open(InfoComponent, {
+        width: '350px'
+      });
+      this.router.navigate([`/`]);
+    }
   }
 
   private compare(a: VoteEntity, b: VoteEntity) {
