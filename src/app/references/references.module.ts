@@ -19,9 +19,10 @@ import { InfoComponent } from './info/info.component';
 import { DeleteConfirmationComponent } from './delete-confirmation/delete-confirmation.component';
 import { CheckboxComponent } from './checkbox/checkbox.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
-  declarations: [ListComponent, MainEntryComponent, ModalComponent, PreviewComponent, InfoComponent, DeleteConfirmationComponent, CheckboxComponent],
+  declarations: [ListComponent, MainEntryComponent, ModalComponent, PreviewComponent, InfoComponent, DeleteConfirmationComponent, CheckboxComponent, MenuComponent],
   exports: [
     ListComponent
   ],
