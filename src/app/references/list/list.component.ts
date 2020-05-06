@@ -143,24 +143,23 @@ export class ListComponent implements OnInit {
   }
 
   private setValues(columns: Column[], resources: VoteEntity[]) {
-    this.columns = columns;
-    try{
-      this.displayedColumns = ['no', ...columns.map(c => c.title), 'actions'];
-      this.resources = resources.sort(this.compare);
-      this.columns.forEach(({ type }) => {
-        if (type === ColumnType.TEXT) {
-          this.isTextColumn = true;
-        } else if (type === ColumnType.VOTE) {
-          this.isVoteColumn = true;
-        }
-      });
-    }
-    catch (error) {
+    if (!columns || !resources) {
       this.dialog.open(InfoComponent, {
         width: '350px'
       });
       this.router.navigate([`/`]);
-    }
+      return;
+    }    
+    this.columns = columns;
+    this.displayedColumns = ['no', ...columns.map(c => c.title), 'actions'];
+    this.resources = resources.sort(this.compare);
+    this.columns.forEach(({ type }) => {
+      if (type === ColumnType.TEXT) {
+        this.isTextColumn = true;
+      } else if (type === ColumnType.VOTE) {
+        this.isVoteColumn = true;
+      }
+    });
   }
 
   private compare(a: VoteEntity, b: VoteEntity) {
