@@ -4,11 +4,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
 
 @Component({
-  selector: 'app-menu',
-  templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.sass']
+  selector: 'app-list-menu',
+  templateUrl: './list-menu.component.html',
+  styleUrls: ['./list-menu.component.sass']
 })
-export class MenuComponent implements OnInit {
+export class ListMenuComponent implements OnInit {
 
   isActive: boolean;
 
