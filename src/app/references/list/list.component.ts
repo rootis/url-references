@@ -60,7 +60,11 @@ export class ListComponent implements OnInit {
 
   delete(row: object) {
     const dialogRef = this.dialog.open(DeleteConfirmationComponent, {
-      width: '500px'
+      width: '500px',
+      data: {
+        type: 'ENTRY',
+        title: ''
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => result && this.firebaseService.delete(this.referenceService.document, row))

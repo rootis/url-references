@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
@@ -9,6 +9,8 @@ import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confi
   styleUrls: ['./list-menu.component.sass']
 })
 export class ListMenuComponent implements OnInit {
+
+  @Input() title;
 
   isActive: boolean;
 
@@ -32,7 +34,11 @@ export class ListMenuComponent implements OnInit {
 
   delete() {
     const dialogRef = this.dialog.open(DeleteConfirmationComponent, {
-      width: '500px'
+      width: '500px',
+      data: {
+        type: 'LIST',
+        title: this.title
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => result && alert("List deleted"));  //remove entry from firebase at this line

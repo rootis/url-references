@@ -1,4 +1,5 @@
-<h3 class="mat-h3">Do you want to delete this record?</h3>
+<h3 *ngIf="data.type === 'LIST'" class="mat-h3">Do you want to delete list "<strong>{{data.title}}</strong>"?</h3>
+<h3 *ngIf="data.type === 'ENTRY'" class="mat-h3">Do you want to delete this record?</h3>
 
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
