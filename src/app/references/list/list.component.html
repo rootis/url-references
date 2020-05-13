@@ -1,9 +1,7 @@
 <div class="content">
-  <div class="list-name">
-    <h1 class="mat-h1">{{code}}</h1>
+  <div>
     <app-list-menu title={{code}}></app-list-menu>
   </div>
-
   <table mat-table [dataSource]="resources" class="mat-elevation-z8">
     <ng-container matColumnDef="no">
       <th mat-header-cell *matHeaderCellDef> No.</th>
