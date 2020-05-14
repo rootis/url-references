@@ -1,8 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { Column, ColumnType, ReferenceService } from '../reference.service';
-import { FirebaseService } from '../../core/firebase.service';
+import { FirebaseService, ReferenceService } from '@services';
 
 @Component({
   selector: 'app-modal',
@@ -23,7 +22,7 @@ export class ModalComponent implements OnInit {
       private firebaseService: FirebaseService,
       private referenceService: ReferenceService
   ) {
-    this.columns = data.columns.filter(c => c.type !== ColumnType.VOTE && c.type !== ColumnType.CHECKBOX);
+    this.columns = data.columns.filter(c => c.type !== 'VOTE' && c.type !== 'CHECKBOX');
     this.reference = JSON.parse(JSON.stringify(data.data));
   }
 

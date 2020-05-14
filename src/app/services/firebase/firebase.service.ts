@@ -3,11 +3,7 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firest
 import * as firebase from 'firebase/app';
 import 'firebase/firestore';
 
-import { environment } from '../../environments/environment';
-
-export interface Entity {
-  id?: string;
-}
+import { environment } from '@environment';
 
 @Injectable({
   providedIn: 'root'

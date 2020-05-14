@@ -8,6 +8,6 @@
     </a>
     <a [routerLink]="['/']" class="header-title">Listify</a>
     <span class="example-spacer"></span>
-    <a mat-button *ngIf="!auth.user" (click)="login()">Login</a>
-    <a mat-button *ngIf="auth.user" (click)="logout()">Logout</a>
+    <a mat-button *ngIf="!securityService.user" (click)="login()">Login</a>
+    <a mat-button *ngIf="securityService.user" (click)="logout()">Logout</a>
 </mat-toolbar>

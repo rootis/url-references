@@ -10,7 +10,7 @@ interface User {
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class SecurityService {
 
   user: User;
 

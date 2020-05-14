@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import { ReferenceService } from '../reference.service';
-import { FirebaseService } from '../../core/firebase.service';
+import { FirebaseService, ReferenceService } from '@services';
 
 @Component({
   selector: 'app-checkbox',

@@ -3,18 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { Entity, FirebaseService } from '../../core/firebase.service';
-import { Column, ColumnType, ReferenceService } from '../reference.service';
+import { FirebaseService, ReferenceService, SecurityService } from '@services';
 import { ModalComponent } from '../modal/modal.component';
 import { PreviewComponent } from '../preview/preview.component';
-import { AuthService } from '../../core/auth.service';
 import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
 import { InfoComponent } from '../info/info.component';
-
-interface VoteEntity extends Entity {
-  votedPeople: {[key: string]: boolean};
-  votes: number;
-}
 
 @Component({
   selector: 'app-list',
@@ -35,7 +28,7 @@ export class ListComponent implements OnInit {
       private firebaseService: FirebaseService,
       private referenceService: ReferenceService,
       private route: ActivatedRoute,
-      private authService: AuthService,
+      private securityService: SecurityService,
       private snackBar: MatSnackBar,
       private router: Router
   ) {
@@ -55,9 +48,9 @@ export class ListComponent implements OnInit {
   }
 
   isTextualColumn(type: ColumnType) {
-    return type === ColumnType.TEXT ||
-        type === ColumnType.TITLE ||
-        type === ColumnType.DESCRIPTION;
+    return type === 'TEXT' ||
+        type === 'TITLE' ||
+        type === 'DESCRIPTION';
   }
 
   delete(row: object) {
@@ -65,7 +58,7 @@ export class ListComponent implements OnInit {
       width: '500px'
     });
 
-    dialogRef.afterClosed().subscribe(result => result && this.firebaseService.delete(this.referenceService.document, row))
+    dialogRef.afterClosed().subscribe(result => result && this.firebaseService.delete(this.referenceService.document, row));
   }
 
   add() {
@@ -98,12 +91,12 @@ export class ListComponent implements OnInit {
   }
 
   vote(voteEntity: VoteEntity) {
-    const email = this.authService.user?.email;
+    const userEmail = this.securityService.user?.email;
 
-    if (email) {
-      this.addVote(voteEntity, email);
+    if (userEmail) {
+      this.addVote(voteEntity, userEmail);
     } else {
-      this.authService.loginGoogle()
+      this.securityService.loginGoogle()
         .then(({ email }) => this.addVote(voteEntity, email))
         .catch(() => console.error('Login failed'));
     }
@@ -149,14 +142,15 @@ export class ListComponent implements OnInit {
       });
       this.router.navigate([`/`]);
       return;
-    }    
+    }
+
     this.columns = columns;
     this.displayedColumns = ['no', ...columns.map(c => c.title), 'actions'];
     this.resources = resources.sort(this.compare);
     this.columns.forEach(({ type }) => {
-      if (type === ColumnType.TEXT) {
+      if (type === 'TEXT') {
         this.isTextColumn = true;
-      } else if (type === ColumnType.VOTE) {
+      } else if (type === 'VOTE') {
         this.isVoteColumn = true;
       }
     });

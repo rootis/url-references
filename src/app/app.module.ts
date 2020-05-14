@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 
-import { environment } from '../environments/environment';
+import { environment } from '@environment';
 import { AppRoutingModule } from './app-routing.module';
 import { ReferencesModule } from './references/references.module';
 import { AppComponent } from './app.component';
