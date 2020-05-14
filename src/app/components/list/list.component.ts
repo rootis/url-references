@@ -4,10 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FirebaseService, ReferenceService, SecurityService } from '@services';
-import { ModalComponent } from '../modal/modal.component';
-import { PreviewComponent } from '../preview/preview.component';
-import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
-import { InfoComponent } from '../info/info.component';
+import { DeleteConfirmComponent } from '@components/delete-confirm';
+import { InfoComponent } from '@components/info';
+import { PreviewComponent } from '@components/preview/preview.component';
+import { ModalComponent } from '@components/modal';
 
 @Component({
   selector: 'app-list',
@@ -54,7 +54,7 @@ export class ListComponent implements OnInit {
   }
 
   delete(row: object) {
-    const dialogRef = this.dialog.open(DeleteConfirmationComponent, {
+    const dialogRef = this.dialog.open(DeleteConfirmComponent, {
       width: '500px'
     });
 
