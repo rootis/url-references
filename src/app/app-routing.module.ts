@@ -1,12 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { ListComponent } from '@components/list';
+import { MainEntryComponent } from '@components/main-entry';
+
 const routes: Routes = [
   {
     path: '',
-    loadChildren: () =>
-        import('./references/references.module').then(m => m.ReferencesModule)
+    component: MainEntryComponent
   },
+  {
+    path: ':code',
+    component: ListComponent
+  }
 ];
 
 @NgModule({
