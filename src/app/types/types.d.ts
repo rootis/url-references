@@ -19,12 +19,3 @@ interface VoteEntity extends Entity {
   votedPeople: {[key: string]: boolean};
   votes: number;
 }
-
-interface Env {
-  COLLECTION_PATH: string;
-  FIREBASE_CONFIG: {[key: string]: string};
-}
-
-interface Process {
-  env: Env;
-}

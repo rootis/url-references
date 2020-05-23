@@ -1,5 +1,3 @@
-declare var process: Process;
-
 export const environment = {
   production: false,
   collectionPath: process.env.COLLECTION_PATH,
