@@ -1,0 +1,20 @@
+<button mat-button color="basic" [matMenuTriggerFor] = "menu" aria-label="Menu">
+    <div class="list-name">
+        <h1 class="mat-h1 title">{{title}}</h1>
+        <mat-icon>expand_more</mat-icon>
+    </div>
+</button>
+<mat-menu #menu="matMenu">
+    <button mat-menu-item *ngIf="isActive" (click)="deactivateList()">
+        <mat-icon>speaker_notes_off</mat-icon>
+        <span>Deactivate list</span>
+    </button>
+    <button mat-menu-item *ngIf="!isActive" (click)="activateList()">
+        <mat-icon>speaker_notes</mat-icon>
+        <span>Activate list</span>
+    </button>
+    <button mat-menu-item class="delete" (click)="delete()">
+        <mat-icon>delete</mat-icon>
+        <span>Delete list</span>
+    </button>
+</mat-menu>
