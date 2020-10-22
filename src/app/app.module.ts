@@ -28,6 +28,7 @@ import { ModalComponent } from '@components/modal';
 import { MainEntryComponent } from '@components/main-entry';
 import { PreviewComponent } from '@components/preview';
 import { VersionComponent } from '@components/version';
+import { ListMenuComponent } from '@components/list-menu';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { VersionComponent } from '@components/version';
     MainEntryComponent,
     ModalComponent,
     PreviewComponent,
-    VersionComponent
+    VersionComponent,
+    ListMenuComponent
   ],
   imports: [
       AngularFireModule.initializeApp(environment.firebaseConfig),
